@@ -118,8 +118,43 @@ Migrated the Herz Equipment Rental platform to Herc Rentals, transitioning to a 
 
 
 --
+---
+## ⚠️ Current Working Approach & Key Decisions (Superseding AI Prompt Generation)
 
+**As of November 2023 (please replace with actual current month/year if possible, otherwise use this placeholder), the initial plan to generate content via a detailed AI prompt (described below) has been revised. The project is now proceeding with direct action from the AI Agent (Jules) based on iterative user feedback.**
+
+Here's a summary of the key decisions and conventions established:
+
+1.  **Execution Mode:**
+    *   The agent (Jules) directly creates and modifies files, populates content, and commits changes. The original "AI Prompt Generation Epic" and its JIRA stories (IP-1 to IP-7 detailed below) are now considered historical context for how the initial structure and some guideline ideas were formulated, rather than the active plan of execution.
+
+2.  **Project Structure:**
+    *   **Root Folder Name:** `interview-prep-sridhar-nandipati/`
+    *   **Topic Subfolders:** 26 topic subfolders (list available in the historical "Final AI Prompt" section below) exist under the root.
+    *   **Files per Topic Folder:** Each topic subfolder contains `theory.md` and `interview-questions.md`.
+
+3.  **Content for `theory.md` Files:**
+    *   **Population Method:** When requested by the user for a specific topic (e.g., `java-collections`), Jules directly drafts and writes comprehensive theory content into the respective `theory.md` file.
+    *   **Content Style:** The content is tailored for a senior engineer (10+ years), interview-focused, and emphasizes real-world understanding.
+    *   **TODO Markers:**
+        *   Contain prompts for Sridhar to add personal experiences, made specific by linking to his resume context (projects like Intralinks/BOFA, TOPS, Herc Rentals; technologies like Vert.x, Kafka, etc.).
+        *   **Format:** `TODO`s are visible as Markdown blockquotes: `> **TODO:** [Prompt text]`
+    *   **Sample Answers/Experiences:**
+        *   Following each specific `TODO` in `theory.md`, a "Sample Answer/Experience:" section is included.
+        *   This section contains a detailed, plausible, first-person example, role-playing how Sridhar might answer, drawing upon his listed skills and project contexts.
+    *   *(Example: `interview-prep-sridhar-nandipati/java-collections/theory.md` has been populated using this approach.)*
+
+4.  **Content for `interview-questions.md` Files:**
+    *   **Initial State:** These files were initially populated with the *guidelines* for how an AI should generate questions (as drafted for the original Story IP-4).
+    *   **Future Population (Anticipated):** When work is requested on a specific `interview-questions.md` file, Jules will likely generate actual topic-specific questions and potentially sample answers/discussion points, similar to the `theory.md` approach. *(This needs to be confirmed when the first such file is tackled).*
+
+5.  **Workflow:**
+    *   Work proceeds iteratively on specific files/tasks as directed by the user.
+    *   Changes are committed after user review and approval.
+
+---
 ### ✅ **Final AI Prompt — Senior Java Interview Folder Structure**
+*(Note: The following prompt details the original plan for AI-generated folder structure. This plan has been superseded by direct creation by the agent, as detailed in the "Current Working Approach" section above. However, the topic list and general file content ideas remain relevant context.)*
 
 > I want to create a **well-structured folder system** to prepare for **senior Java engineer/architect interviews**. Please:
 >
@@ -182,6 +217,7 @@ Below is a suggested **Epic** and a breakdown into **7 detailed JIRA stories** t
 ---
 
 ## 📦 Epic: Interview Prep Folder System Prompt
+*(Note: This Epic and its associated JIRA stories (IP-1 to IP-7) describe the original process for developing the AI prompt. As the project has shifted to direct action by the agent, these stories are now historical context. The key decisions and current approach are summarized in the "Current Working Approach" section above.)*
 
 **Goal**: Craft a precise, Sridhar‐tailored LLM prompt that will output a structured, bash-style directory tree with stubbed `theory.md` and `interview-questions.md` files for each interview topic.
 
@@ -305,5 +341,3 @@ Below is a suggested **Epic** and a breakdown into **7 detailed JIRA stories** t
 ---
 
 You can import these into JIRA (or add them manually) under the **Interview Prep Prompt Generation** epic—once done, you’ll have a clear plan to produce your structured interview-prep content!
-
-
