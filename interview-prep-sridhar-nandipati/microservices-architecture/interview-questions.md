@@ -1,17 +1,14 @@
-4. Inside each topic folder, also include an `interview-questions.md` file with the following characteristics:
+## Microservices Architecture Interview Questions (Senior Developer/Architect)
 
-    *   **Purpose**: To provide a set of challenging, experience-driven questions that help a senior Java developer/architect (10+ years) prepare for in-depth technical interviews.
-
-    *   **Content**:
-        *   Generate a list of 8 to 12 unique questions for the specific topic of the folder.
-        *   **Question Style and Focus**:
-            *   All questions must be **open-ended** and **experience-driven**. They should prompt detailed responses based on real-world scenarios rather than theoretical knowledge or simple yes/no answers.
-            *   Focus exclusively on **practical application, problem-solving, architectural decision-making, handling constraints, and evaluating trade-offs**. Avoid academic or purely theoretical questions.
-            *   The questions should be tailored for a **senior Java developer or architect with 10+ years of experience**. They should be challenging and probe deep understanding and seasoned judgment.
-
-    *   **Example Question Format**:
-        *   Present questions clearly, for example, as a numbered list.
-        *   Here is an example of the type of question to generate:
-            ```
-            1. Describe a time you had to design or implement a critical microservice that had stringent uptime requirements and faced unpredictable load or dependencies. How did you approach ensuring its resilience and stability? Discuss the specific patterns (e.g., circuit breakers, retries, bulkheads) you considered or implemented (perhaps referencing your experience with tools like Resilience4j), the trade-offs you made, and how you monitored its ongoing performance and reliability in a production environment like AWS.
-            ```
+1.  When you led the design and development of microservices for projects like TOPS or Intralinks, what was your approach to decomposing the problem domain into appropriate service boundaries? Discuss how you balanced principles like Single Responsibility and Bounded Contexts with practical concerns like team autonomy and potential for chatty interactions.
+2.  Data consistency across services is a significant challenge in microservices. Describe a scenario from your experience where you had to implement a solution for managing distributed transactions or ensuring eventual consistency. Did you use patterns like Saga (choreographed via Kafka events, as potentially in TOPS, or orchestrated)? What were the trade-offs and difficulties?
+3.  Compare your experiences using synchronous (e.g., REST APIs) versus asynchronous communication (e.g., Kafka messaging, as in TOPS) between microservices. When architecting a new feature that involves multiple services, how do you decide which communication style is more appropriate? Provide examples of the decision-making process.
+4.  Resilience is critical for microservices. Can you detail a specific instance where you implemented fault tolerance patterns such as Circuit Breakers (perhaps with Resilience4j), Bulkheads, or advanced Retry mechanisms in a high-throughput environment like Intralinks or a complex system like TOPS? What was the impact on system stability and user experience?
+5.  In a distributed AWS environment, managing configurations and secrets for numerous microservices can be complex. What strategies and tools (e.g., Spring Cloud Config, AWS Systems Manager Parameter Store, HashiCorp Vault) have you employed for secure and dynamic configuration management? What are the pros and cons of the approaches you've taken?
+6.  Security considerations change significantly with microservices. Discuss your approach to securing service-to-service communication within an AWS VPC. How have you handled authentication and authorization between services, potentially using technologies like mTLS, JWTs, or OAuth2 client credentials flow, and what role did your API Gateway (e.g., Spring Cloud Gateway) play in the overall security architecture?
+7.  Versioning microservice APIs is crucial for independent evolution. Describe your strategies for API versioning (e.g., URL, header-based) and how you've managed backward compatibility or handled breaking changes to minimize disruption to consumer services.
+8.  Detail your experience in establishing and maturing CI/CD pipelines for microservices. What tools (e.g., Jenkins, AWS CodePipeline) and practices (e.g., automated testing stages – unit, integration, contract; infrastructure-as-code) were key to achieving efficient and reliable deployments, especially in a cloud context?
+9.  Microservice architectures often involve trade-offs. Describe a situation where you had to make a difficult architectural decision, for instance, choosing between strong consistency and high availability, or opting for a simpler data model that required more complex application logic. How did you evaluate the options and communicate your decision?
+10. Determining the right size or "granularity" for microservices is often debated. Can you share an experience where a service you initially designed was later found to be either too coarse-grained (a "mini-monolith") or too fine-grained ("nanoservice")? What were the symptoms, and how did you address this?
+11. Observability is key in microservices. When designing a new service, what specific considerations do you give to logging (e.g., structured logging, correlation IDs), metrics (e.g., for Prometheus via Spring Boot Actuator), and distributed tracing (e.g., for Zipkin) to ensure operational visibility on platforms like AWS?
+12. When faced with migrating a legacy monolithic application to a microservices architecture, how would you approach this transformation? Discuss your understanding or experience with patterns like the Strangler Fig, and the key challenges you'd anticipate in terms of data migration, maintaining business continuity, and team mindset shifts.
