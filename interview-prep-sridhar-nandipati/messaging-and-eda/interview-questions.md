@@ -83,13 +83,13 @@
         //     try {
         //         //    boolean updateSucceeded = flightRepository.updateStatusIfNewer(
         //         //        event.getFlightId(), event.getNewStatus(), event.getUpdateTimestamp()
-        //         //    ); // This method would internally do: UPDATE flights SET status = ?, last_updated = ? 
+        //         //    ); // This method would internally do: UPDATE flights SET status = ?, last_updated = ?
         //           // WHERE flight_id = ? AND last_updated < ?
 
         //         //    if (!updateSucceeded) {
         //         //        log.info("Skipping event as it's stale or already applied (based on timestamp/state): {}", event.getEventId());
         //         //    }
-                
+
         //         // 3. Mark event as processed in Redis (only if update was attempted/successful based on business logic)
         //         //    if (updateSucceeded) { // Or some other condition that implies work was done
         //         //        redisService.markEventAsProcessed(event.getEventId(), Duration.ofHours(24)); // TTL for the ID
@@ -318,7 +318,7 @@
             ```java
             // FlightEvent event = new FlightEvent("UA123", "GATE_CHANGE", "C20");
             // // The second argument is the key
-            // kafkaTemplate.send("flight_updates", event.getFlightId(), event); 
+            // kafkaTemplate.send("flight_updates", event.getFlightId(), event);
             ```
         *   Kafka's default partitioner (or a compatible custom one if we had specific needs, though default usually suffices) uses a hash of the message key to determine the target partition: `hash(key) % numPartitions`. This ensures that all messages with the same key (e.g., same `flightId`) will always be routed to the same partition.
 

@@ -78,7 +78,7 @@
     //         log.warn("Circuit breaker for weather API is open for location {}. Error: {}", location, ex.getMessage());
     //         return CompletableFuture.completedFuture(getCachedWeatherDataOrDefault(location));
     //     }
-        
+
     //     public CompletableFuture<WeatherData> getWeatherFallback(String location, TimeoutException ex) { // Timeout from TimeLimiter
     //         log.warn("Timeout calling weather API for location {}. Error: {}", location, ex.getMessage());
     //         return CompletableFuture.completedFuture(getCachedWeatherDataOrDefault(location));

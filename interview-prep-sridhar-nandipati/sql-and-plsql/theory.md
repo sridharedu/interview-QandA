@@ -123,8 +123,8 @@ INNER JOIN
 INNER JOIN
     regions r ON ei.current_region_id = r.region_id
 LEFT JOIN
-    (SELECT 
-         equipment_id, 
+    (SELECT
+         equipment_id,
          SUM(TRUNC(rental_end_date) - TRUNC(rental_start_date) + 1) AS total_rental_days_for_equipment,
          SUM(rental_charge) AS total_rental_revenue_for_equipment
      FROM rental_history
@@ -229,31 +229,31 @@ A query nested inside another SQL query. They can appear in various parts of a m
     ```sql
     WITH employee_hierarchy (employee_id, employee_name, manager_id, emp_level, path_to_root) AS (
         -- Anchor Member: Selects the top-level employees (e.g., CEO who has no manager)
-        SELECT 
-            employee_id, 
-            employee_name, 
-            manager_id, 
+        SELECT
+            employee_id,
+            employee_name,
+            manager_id,
             0 AS emp_level,
             CAST(employee_name AS VARCHAR2(1000)) AS path_to_root
         FROM employees
-        WHERE manager_id IS NULL 
-    
+        WHERE manager_id IS NULL
+
         UNION ALL
-    
+
         -- Recursive Member: Selects employees who report to someone already in the hierarchy
-        SELECT 
-            e.employee_id, 
-            e.employee_name, 
-            e.manager_id, 
+        SELECT
+            e.employee_id,
+            e.employee_name,
+            e.manager_id,
             eh.emp_level + 1,
             eh.path_to_root || ' -> ' || e.employee_name AS path_to_root
         FROM employees e
         INNER JOIN employee_hierarchy eh ON e.manager_id = eh.employee_id -- Joins back to the CTE itself
     )
     -- Optional: CYCLE clause for Oracle to detect cycles if data might have them
-    -- CYCLE employee_id SET is_cycle TO 'Y' DEFAULT 'N' 
-    SELECT employee_id, employee_name, manager_id, emp_level, path_to_root 
-    FROM employee_hierarchy 
+    -- CYCLE employee_id SET is_cycle TO 'Y' DEFAULT 'N'
+    SELECT employee_id, employee_name, manager_id, emp_level, path_to_root
+    FROM employee_hierarchy
     -- WHERE is_cycle = 'N' -- If using CYCLE clause
     ORDER BY emp_level, manager_id, employee_id;
     ```
@@ -295,7 +295,7 @@ WITH MonthlyEquipmentRevenue AS (
         SUM(rental_charge) AS current_month_revenue
     FROM
         rental_history
-    WHERE 
+    WHERE
         rental_charge > 0 -- Consider only revenue-generating entries
     GROUP BY
         equipment_id,
@@ -307,7 +307,7 @@ SELECT
     TO_CHAR(mer.revenue_month, 'YYYY-MM') AS month_year,
     mer.current_month_revenue,
     LAG(mer.current_month_revenue, 1, 0) OVER (PARTITION BY mer.equipment_id ORDER BY mer.revenue_month ASC) AS previous_month_revenue,
-    CASE 
+    CASE
         WHEN LAG(mer.current_month_revenue, 1, 0) OVER (PARTITION BY mer.equipment_id ORDER BY mer.revenue_month ASC) = 0 THEN NULL -- Avoid division by zero if prev month had no revenue
         ELSE ROUND(((mer.current_month_revenue - LAG(mer.current_month_revenue, 1, 0) OVER (PARTITION BY mer.equipment_id ORDER BY mer.revenue_month ASC)) * 100.0) / LAG(mer.current_month_revenue, 1, 0) OVER (PARTITION BY mer.equipment_id ORDER BY mer.revenue_month ASC), 2)
     END AS mom_revenue_growth_pct
@@ -433,7 +433,7 @@ GROUP BY
     r.region_name,
     ei.category_id,
     ec.category_name,
-    TRUNC(SYSDATE); 
+    TRUNC(SYSDATE);
 ```
 We then created appropriate indexes on `mv_daily_region_equip_util_summ (summary_date, region_id, category_id)`.
 
@@ -563,7 +563,7 @@ PL/SQL (Procedural Language extensions to SQL) is Oracle Corporation's proprieta
         WHEN OTHERS THEN
             DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLCODE || ' - ' || SQLERRM);
     END;
-    / 
+    /
     -- The forward slash tells SQL*Plus or SQL Developer to execute the block
     ```
 *   **Structure of a PL/SQL Block:**
@@ -585,11 +585,11 @@ Named PL/SQL blocks that are compiled and stored in the database. They can be ex
     BEGIN
         INSERT INTO activity_logs (user_id, activity_description, log_timestamp, status)
         VALUES (p_user_id, p_activity, SYSTIMESTAMP, 'PENDING');
-        
+
         -- Simulate some processing
         IF LENGTH(p_activity) < 5 THEN
             p_success := FALSE; -- Set OUT parameter
-            UPDATE activity_logs SET status = 'FAILED_VALIDATION' 
+            UPDATE activity_logs SET status = 'FAILED_VALIDATION'
             WHERE user_id = p_user_id AND activity_description = p_activity AND status = 'PENDING'; -- (needs more precise key)
         ELSE
             p_success := TRUE;  -- Set OUT parameter
@@ -605,8 +605,8 @@ Named PL/SQL blocks that are compiled and stored in the database. They can be ex
             RAISE_APPLICATION_ERROR(-20001, 'Error in log_activity: ' || SQLERRM);
     END log_activity;
     /
-    -- To execute: 
-    -- DECLARE v_ok BOOLEAN; BEGIN log_activity('SRIDHAR', 'Logged in', v_ok); DBMS_OUTPUT.PUT_LINE(CASE WHEN v_ok THEN 'Success' ELSE 'Fail' END); END; / 
+    -- To execute:
+    -- DECLARE v_ok BOOLEAN; BEGIN log_activity('SRIDHAR', 'Logged in', v_ok); DBMS_OUTPUT.PUT_LINE(CASE WHEN v_ok THEN 'Success' ELSE 'Fail' END); END; /
     -- Or from SQL (if no OUT params or using wrapper): EXEC log_activity('SRIDHAR', 'Logged in'); (if no OUT)
     ```
 *   **Function:** A subprogram that computes and **must** return a single value (of a specific data type defined in its `RETURN` clause). Functions can also have `IN` parameters, but `OUT` or `IN OUT` parameters are generally discouraged in functions (though possible) as they can make function calls in SQL statements behave unexpectedly or be disallowed. Functions are primarily designed to be used in expressions.
@@ -628,7 +628,7 @@ Named PL/SQL blocks that are compiled and stored in the database. They can be ex
         ELSE
             v_bonus_percentage := 0.05; -- 5%
         END IF;
-        
+
         v_calculated_bonus := v_base_salary * v_bonus_percentage;
         RETURN v_calculated_bonus; -- Returns the calculated value
     EXCEPTION
@@ -639,7 +639,7 @@ Named PL/SQL blocks that are compiled and stored in the database. They can be ex
             RAISE; -- Re-raise the exception
     END calculate_employee_bonus;
     /
-    -- To execute: 
+    -- To execute:
     -- SELECT employee_id, calculate_employee_bonus(employee_id, 4) AS bonus FROM employees;
     -- DECLARE v_bonus NUMBER; BEGIN v_bonus := calculate_employee_bonus(100, 3); END; /
     ```
@@ -663,16 +663,16 @@ Schema objects that group logically related PL/SQL types, variables, constants, 
             salary employees.salary%TYPE,
             hire_date DATE
         );
-        
+
         -- Public exception
         ex_salary_out_of_range EXCEPTION;
 
         -- Public function declaration
         FUNCTION get_employee_details (p_emp_id IN employees.employee_id%TYPE) RETURN employee_details_rec;
-        
+
         -- Public procedure declaration
         PROCEDURE give_raise (p_emp_id IN employees.employee_id%TYPE, p_raise_percentage IN NUMBER);
-        
+
     END hr_utilities;
     /
     ```
@@ -705,11 +705,11 @@ Schema objects that group logically related PL/SQL types, variables, constants, 
         BEGIN
             SELECT salary INTO v_current_salary FROM employees WHERE employee_id = p_emp_id;
             v_new_salary := v_current_salary * (1 + p_raise_percentage / 100);
-            
+
             IF NOT is_salary_valid(v_new_salary) THEN
                 RAISE ex_salary_out_of_range; -- Raise public exception
             END IF;
-            
+
             UPDATE employees SET salary = v_new_salary WHERE employee_id = p_emp_id;
         EXCEPTION
             WHEN NO_DATA_FOUND THEN
@@ -720,7 +720,7 @@ Schema objects that group logically related PL/SQL types, variables, constants, 
 
     END hr_utilities;
     /
-    -- To execute: 
+    -- To execute:
     -- DECLARE details hr_utilities.employee_details_rec; BEGIN details := hr_utilities.get_employee_details(100); END; /
     -- BEGIN hr_utilities.give_raise(100, 10); END; /
     ```
@@ -876,8 +876,8 @@ A cursor is a pointer to a private SQL area in memory that Oracle creates when a
 *   **Cursor `FOR` Loops:** A highly recommended shorthand that implicitly declares the loop variable as a `%ROWTYPE` record, opens the cursor, fetches each row into the record, and closes the cursor automatically when the loop terminates (either normally or via an exception). This is simpler, more readable, and less error-prone than manual cursor handling.
     ```plsql
     BEGIN
-        FOR emp_rec IN (SELECT employee_id, last_name, salary 
-                        FROM employees 
+        FOR emp_rec IN (SELECT employee_id, last_name, salary
+                        FROM employees
                         WHERE department_id = 10 ORDER BY last_name) -- Cursor query directly in loop
         LOOP
             DBMS_OUTPUT.PUT_LINE(emp_rec.last_name || ': ' || emp_rec.salary);
@@ -982,7 +982,7 @@ PL/SQL features that allow processing multiple rows of data with a single DML st
     DECLARE
         TYPE t_employee_id_list IS TABLE OF employees.employee_id%TYPE INDEX BY PLS_INTEGER;
         TYPE t_salary_list IS TABLE OF employees.salary%TYPE INDEX BY PLS_INTEGER;
-        
+
         v_emp_ids    t_employee_id_list;
         v_new_salaries t_salary_list;
         -- Assume v_emp_ids and v_new_salaries are populated with data
@@ -995,10 +995,10 @@ PL/SQL features that allow processing multiple rows of data with a single DML st
 
         IF v_emp_ids.COUNT > 0 THEN
             FORALL i IN v_emp_ids.FIRST..v_emp_ids.LAST -- Iterate through the collection indices
-                UPDATE employees 
+                UPDATE employees
                 SET salary = v_new_salaries(i) -- Use the value from the salary collection at the same index
                 WHERE employee_id = v_emp_ids(i); -- Use the employee ID from the ID collection
-            
+
             DBMS_OUTPUT.PUT_LINE(SQL%ROWCOUNT || ' employee salaries updated in batch.'); -- SQL%ROWCOUNT gives total rows affected by FORALL
         END IF;
     END;
@@ -1009,10 +1009,10 @@ PL/SQL features that allow processing multiple rows of data with a single DML st
     DECLARE
         TYPE t_employee_name_list IS TABLE OF employees.last_name%TYPE;
         TYPE t_salary_list IS TABLE OF employees.salary%TYPE;
-        
+
         v_emp_names   t_employee_name_list; -- Collection to hold last names
         v_salaries    t_salary_list;    -- Collection to hold salaries
-        
+
         l_department_id employees.department_id%TYPE := 60; -- Example department
     BEGIN
         SELECT last_name, salary
@@ -1047,7 +1047,7 @@ PL/SQL features that allow processing multiple rows of data with a single DML st
 **Original (Slow) Approach (Conceptual):**
 ```plsql
 -- PROCEDURE process_staged_transactions AS
---     v_transformed_data main_transactions%ROWTYPE; 
+--     v_transformed_data main_transactions%ROWTYPE;
 -- BEGIN
 --     FOR staging_rec IN (SELECT * FROM financial_staging WHERE status = 'NEW' FOR UPDATE) LOOP -- Row lock
 --         -- Simulate transformation
@@ -1057,9 +1057,9 @@ PL/SQL features that allow processing multiple rows of data with a single DML st
 --         -- ... other transformations ...
 
 --         INSERT INTO main_transactions VALUES v_transformed_data;
-        
---         UPDATE financial_staging 
---         SET status = 'PROCESSED', processed_timestamp = SYSTIMESTAMP 
+
+--         UPDATE financial_staging
+--         SET status = 'PROCESSED', processed_timestamp = SYSTIMESTAMP
 --         WHERE CURRENT OF staging_rec; -- Update current row of cursor
 --     END LOOP;
 --     COMMIT;
@@ -1083,12 +1083,12 @@ We refactored this procedure to use bulk operations to significantly improve its
 --     lt_staging_data   t_staging_tab;
 --     lt_main_txn_data  t_main_txn_tab;
 --     lt_processed_rowids t_rowid_tab;
-    
+
 --     CURSOR c_new_staging_txns IS
 --         SELECT rowid, s.* -- Fetch rowid for precise update/delete later
 --         FROM financial_staging s
 --         WHERE status = 'NEW';
-            
+
 --     l_bulk_limit PLS_INTEGER := 5000; -- Process in chunks
 
 -- BEGIN
@@ -1112,7 +1112,7 @@ We refactored this procedure to use bulk operations to significantly improve its
 --         -- Bulk Insert into main transactions
 --         FORALL i IN lt_main_txn_data.FIRST .. lt_main_txn_data.LAST
 --             INSERT INTO main_transactions VALUES lt_main_txn_data(i);
-        
+
 --         DBMS_OUTPUT.PUT_LINE('Inserted ' || SQL%ROWCOUNT || ' records into main_transactions.');
 
 --         -- Bulk Update staging table status using collected ROWIDs
@@ -1120,7 +1120,7 @@ We refactored this procedure to use bulk operations to significantly improve its
 --             UPDATE financial_staging
 --             SET status = 'PROCESSED', processed_timestamp = SYSTIMESTAMP
 --             WHERE rowid = lt_processed_rowids(i);
-        
+
 --         DBMS_OUTPUT.PUT_LINE('Updated ' || SQL%ROWCOUNT || ' records in financial_staging.');
 
 --         COMMIT; -- Commit each chunk to release locks and manage undo space
@@ -1156,7 +1156,7 @@ The ability to construct and execute SQL statements as strings at runtime, rathe
     -- BEGIN
     --     -- First, get dept_id based on name (could also be dynamic if needed)
     --     SELECT department_id INTO v_dept_id FROM departments WHERE department_name = p_dept_name;
-        
+
     --     v_sql := 'SELECT COUNT(*) FROM employees WHERE department_id = :dept_id_bv';
     --     EXECUTE IMMEDIATE v_sql INTO p_count USING v_dept_id; -- :dept_id_bv is bound to v_dept_id
     -- EXCEPTION
@@ -1169,8 +1169,8 @@ The ability to construct and execute SQL statements as strings at runtime, rathe
     --     v_sql VARCHAR2(200);
     -- BEGIN
     --     -- Sanitize user input if used directly for object names (DBMS_ASSERT is good)
-    --     v_table_name := DBMS_ASSERT.SIMPLE_SQL_NAME('TEMP_' || p_username); 
-    --     v_sql := 'CREATE GLOBAL TEMPORARY TABLE ' || v_table_name || 
+    --     v_table_name := DBMS_ASSERT.SIMPLE_SQL_NAME('TEMP_' || p_username);
+    --     v_sql := 'CREATE GLOBAL TEMPORARY TABLE ' || v_table_name ||
     --              ' (id NUMBER, data VARCHAR2(100)) ON COMMIT PRESERVE ROWS';
     --     EXECUTE IMMEDIATE v_sql;
     -- END;

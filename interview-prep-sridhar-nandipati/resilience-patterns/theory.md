@@ -64,7 +64,7 @@ For example, calls from the `FlightDataAggregatorService` to various downstream 
     ```java
     // @TimeLimiter(name = "documentMetadataServiceCall")
     // @Retry(name = "documentMetadataServiceCall") // Often combined with retries
-    // public CompletableFuture<Metadata> getMetadataAsync(String docId) { 
+    // public CompletableFuture<Metadata> getMetadataAsync(String docId) {
     //    // return webClient.get()...; or other async operation
     // }
     ```
@@ -108,7 +108,7 @@ We would configure a `Retry` instance in `application.yml` (or programmatically)
 #       maxAttempts: 3 # Total attempts including the first one
 #       waitDuration: 500ms # Initial wait duration for fixed or simple exponential backoff
 #       # For more control with exponential backoff and jitter:
-#       intervalBiFunction: "T(io.github.resilience4j.core.IntervalFunction).ofExponentialRandomBackoff(500L, 2.0, 0.3)" 
+#       intervalBiFunction: "T(io.github.resilience4j.core.IntervalFunction).ofExponentialRandomBackoff(500L, 2.0, 0.3)"
 #       # Initial: 500ms, Multiplier: 2.0, Randomization Factor: 0.3 (adds +/- 30% jitter)
 #       retryExceptions:
 #         - java.io.IOException
@@ -194,7 +194,7 @@ We wrapped calls from `FlightInformationService` to `AircraftCapacityService` wi
 #   instances:
 #     aircraftCapacityService: # Name of the circuit breaker instance
 #       registerHealthIndicator: true # Exposes state to Spring Boot Actuator health endpoint
-#       slidingWindowType: COUNT_BASED 
+#       slidingWindowType: COUNT_BASED
 #       slidingWindowSize: 50          # Evaluate the failure rate over the last 50 calls
 #       minimumNumberOfCalls: 20       # Minimum calls before the failure rate is calculated (to avoid tripping on initial sparse calls)
 #       failureRateThreshold: 60       # If 60% of the last 'slidingWindowSize' calls (once 'minimumNumberOfCalls' is met) fail, trip to OPEN
@@ -225,7 +225,7 @@ And applied in the client code using annotations:
 //     }
 
 //     public AircraftCapacity getCapacityFallback(String aircraftType, Throwable t) {
-//         log.warn("Circuit breaker for aircraftCapacityService is OPEN for type {}. Fallback returned. Error: {}", 
+//         log.warn("Circuit breaker for aircraftCapacityService is OPEN for type {}. Fallback returned. Error: {}",
 //                  aircraftType, t.getClass().getSimpleName(), t.getMessage());
 //         // Return cached data if available, a default capacity object, or indicate data is unavailable
 //         return AircraftCapacity.UNKNOWN_CAPACITY; // Example default

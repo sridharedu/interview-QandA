@@ -261,7 +261,7 @@
 
     ```java
     // Assume commonExecutor is a well-tuned ExecutorService for these async tasks
-    // private final ExecutorService commonExecutor = ...; 
+    // private final ExecutorService commonExecutor = ...;
     // Define timeouts for individual calls
     // private static final long DEFAULT_TIMEOUT_MS = 3000; // 3 seconds
 
@@ -272,11 +272,11 @@
     //         .exceptionally(ex -> { // Handle failure of the critical first call
     //             log.error("Critical failure: Failed to get FlightDetails for {}: {}", flightId, ex.getMessage());
     //             // Depending on requirements, could throw a specific business exception or complete with a specific error state
-    //             throw new CompletionException("FlightDetails unavailable", ex); 
+    //             throw new CompletionException("FlightDetails unavailable", ex);
     //         })
     //         .thenComposeAsync(flightDetails -> {
     //             // If flightDetails is null due to a non-critical exceptional return above (not shown here, but possible), handle it
-    //             if (flightDetails == null) { 
+    //             if (flightDetails == null) {
     //                 // This path wouldn't be hit if the above exceptionally throws CompletionException
     //                 return CompletableFuture.completedFuture(new AggregatedFlightData(flightId, null, null, null, "Flight details missing"));
     //             }
@@ -305,7 +305,7 @@
     //                     CrewAssignments crew = crewFuture.join();
     //                     return new AggregatedFlightData(flightId, flightDetails, weather, crew, "Successfully aggregated");
     //                 }, commonExecutor); // Ensure this combination logic also runs on a managed executor
-    //         }, commonExecutor); 
+    //         }, commonExecutor);
     // }
 
     // // AggregatedFlightData DTO would hold all parts
@@ -534,7 +534,7 @@
     //                 // int numDataPopulators = getNumberOfDataPopulatorsForWorkspaceTemplate();
     //                 // if (numDataPopulators == 0) return true; // Terminate if none
     //                 // // Bulk register for all expected data populators if they don't self-register
-    //                 // phaser.bulkRegister(numDataPopulators); 
+    //                 // phaser.bulkRegister(numDataPopulators);
     //                 System.out.println("Core created. Advancing to data population.");
     //                 return false; // Continue to data population phase
     //             case 1: // All data population tasks arrived and deregistered
@@ -543,7 +543,7 @@
     //                     // Validation service could be a new party or pre-registered.
     //                     // If validation is a new party, it needs to register now.
     //                     // Or, controller proceeds with validation.
-    //                     return false; 
+    //                     return false;
     //                 }
     //                 return registeredParties == 0; // Terminate if controller also deregistered.
     //             case 2: // Validation finished
@@ -578,7 +578,7 @@
     // //     performValidation(); // Controller performs or coordinates validation
     // //     phaser.arriveAndAwaitAdvance(); // Controller arrives at phase 2
     // // }
-    
+
     // // Phase 3: Activation
     // // if (!phaser.isTerminated()) {
     // //     activateWorkspace();

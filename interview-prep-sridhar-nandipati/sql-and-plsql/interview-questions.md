@@ -14,7 +14,7 @@
         SELECT
             so.sales_rep_id,
             COUNT(DISTINCT so.customer_id) AS distinct_customer_count,
-            SUM(sol.quantity * sol.unit_price) AS total_revenue_last_year 
+            SUM(sol.quantity * sol.unit_price) AS total_revenue_last_year
             -- Assuming revenue is calculated from order lines; could be simpler if on SALES_ORDERS
         FROM
             SALES_ORDERS so
@@ -22,7 +22,7 @@
             ORDER_LINES sol ON so.order_id = sol.order_id
         WHERE
             so.order_date >= ADD_MONTHS(TRUNC(SYSDATE), -12) -- Last 12 full months from start of current month
-            AND so.order_date < TRUNC(SYSDATE) 
+            AND so.order_date < TRUNC(SYSDATE)
             -- AND so.status = 'COMPLETED' -- Or other relevant statuses like 'SHIPPED'
         GROUP BY
             so.sales_rep_id
@@ -51,11 +51,11 @@
         srr.distinct_customer_count,
         srr.total_revenue_last_year,
         srr.rank_in_region_by_revenue,
-        CASE 
-            WHEN srr.distinct_customer_count > 0 THEN 
+        CASE
+            WHEN srr.distinct_customer_count > 0 THEN
                 ROUND(srr.total_revenue_last_year / srr.distinct_customer_count, 2)
-            ELSE 
-                0 
+            ELSE
+                0
         END AS avg_revenue_per_customer
     FROM
         SalesRepRegionalRank srr
@@ -148,7 +148,7 @@
         -- (Approval might mean "user is allowed to be added if they accept", not direct membership)
         PROCEDURE approve_pending_invitation (
             p_invitation_id       IN workspace_invitations.invitation_id%TYPE,
-            p_approved_by_user_id IN NUMBER 
+            p_approved_by_user_id IN NUMBER
         );
 
         -- Procedure for an administrator or authorized user to reject a pending invitation
@@ -157,7 +157,7 @@
             p_rejected_by_user_id IN NUMBER,
             p_rejection_reason    IN VARCHAR2 DEFAULT NULL
         );
-        
+
         -- Procedure for a user to accept an invitation (e.g., by clicking a link with a token)
         PROCEDURE accept_user_invitation (
             p_invitation_token    IN VARCHAR2, -- A secure, unique token associated with an invitation_id
@@ -169,7 +169,7 @@
         FUNCTION get_invitation_details (
             p_invitation_id IN workspace_invitations.invitation_id%TYPE
         ) RETURN r_invitation_detail;
-        
+
         -- Function to get all pending invitations for a workspace (for admin view)
         -- TYPE t_invitation_detail_table IS TABLE OF r_invitation_detail INDEX BY PLS_INTEGER;
         -- FUNCTION get_pending_invitations_for_workspace (
@@ -253,7 +253,7 @@
             -- Conceptual Restructure:
             -- WITH UserAccessibleWorkspaces AS ( -- Or even UserAccessibleDocs
             --     SELECT DISTINCT wp.workspace_id -- Or d.doc_id
-            --     FROM WORKSPACE_PERMISSIONS wp 
+            --     FROM WORKSPACE_PERMISSIONS wp
             --     -- ... join with user groups, etc. ...
             --     WHERE wp.user_id = :current_user_id OR wp.group_id IN (SELECT /* user's groups */)
             -- ),
@@ -291,7 +291,7 @@
     **Original (Slow-by-Slow) PL/SQL Structure (Conceptual):**
     ```plsql
     -- PROCEDURE migrate_doc_metadata_row_by_row IS
-    --     CURSOR c_stg_docs IS 
+    --     CURSOR c_stg_docs IS
     --         SELECT * FROM LEGACY_DOC_STAGING WHERE migration_status = 'PENDING' FOR UPDATE OF migration_status;
     --     v_new_metadata DOCUMENT_METADATA_NEW%ROWTYPE;
     --     v_lookup_value VARCHAR2(100);
@@ -301,9 +301,9 @@
     --             -- 1. Transformation & Lookups (simplified)
     --             v_new_metadata.doc_id := stg_rec.legacy_id;
     --             v_new_metadata.title := SUBSTR(stg_rec.legacy_title, 1, 255);
-    --             SELECT new_category_id INTO v_new_metadata.category_id 
+    --             SELECT new_category_id INTO v_new_metadata.category_id
     --             FROM CATEGORY_MAPPING WHERE legacy_category = stg_rec.legacy_category; -- Lookup
-                
+
     --             v_new_metadata.creation_date := TO_DATE(stg_rec.creation_ts, 'YYYYMMDDHH24MISS');
     --             -- ... other transformations ...
 
@@ -314,7 +314,7 @@
     --             UPDATE LEGACY_DOC_STAGING
     --             SET migration_status = 'MIGRATED', migration_date = SYSDATE
     --             WHERE CURRENT OF c_stg_docs; -- Update current row of cursor
-                
+
     --         EXCEPTION
     --             WHEN OTHERS THEN
     //                 UPDATE LEGACY_DOC_STAGING
@@ -343,9 +343,9 @@
     --     lt_error_rowids     t_rowid_tab;
     --     lt_error_messages   DBMS_SQL.VARCHAR2_TABLE; -- For storing error messages for error rows
 
-    --     CURSOR c_stg_docs IS 
+    --     CURSOR c_stg_docs IS
     --         SELECT rowid, s.* FROM LEGACY_DOC_STAGING s WHERE migration_status = 'PENDING';
-            
+
     --     l_bulk_limit PLS_INTEGER := 5000; -- Process 5000 records per batch
 
     -- BEGIN
@@ -367,13 +367,13 @@
     --                 -- If CATEGORY_MAPPING is small, it could be loaded into a PL/SQL collection (associative array)
     --                 -- at the start of the procedure for faster lookups. Or, this lookup could be incorporated
     --                 -- into a more complex SQL if possible, but let's assume it stays for this example.
-    --                 SELECT new_category_id INTO lt_new_metadata(i).category_id 
+    --                 SELECT new_category_id INTO lt_new_metadata(i).category_id
     --                 FROM CATEGORY_MAPPING WHERE legacy_category = lt_staging_data(i).legacy_category;
-                    
+
     --                 lt_new_metadata(i).creation_date := TO_DATE(lt_staging_data(i).creation_ts, 'YYYYMMDDHH24MISS');
     --                 -- ... other transformations for lt_new_metadata(i) ...
     --             EXCEPTION
-    --                 WHEN OTHERS THEN 
+    --                 WHEN OTHERS THEN
     --                     -- Mark this row for error update, store its original ROWID
     --                     lt_error_rowids(lt_error_rowids.COUNT + 1) := lt_processed_rowids(i);
     --                     lt_error_messages(lt_error_messages.COUNT + 1) := SUBSTR(SQLERRM, 1, 500);
@@ -393,8 +393,8 @@
     --             -- A simpler way if errors are rare is to assume all in lt_new_metadata were successful
     --             -- and their original ROWIDs are at the same indices in lt_processed_rowids.
     --             -- For robust error handling, one might build a separate collection of ROWIDs for success.
-    --             DECLARE 
-    //                 lt_success_rowids t_rowid_tab; 
+    --             DECLARE
+    //                 lt_success_rowids t_rowid_tab;
     //                 idx PLS_INTEGER := lt_new_metadata.FIRST;
     //             BEGIN
     //                 WHILE idx IS NOT NULL LOOP
@@ -409,12 +409,12 @@
     //                 END IF;
     //             END;
     //         END IF;
-            
+
     --         -- Mark error staging rows (if any)
     --         IF lt_error_rowids.COUNT > 0 THEN
     --             FORALL i IN lt_error_rowids.FIRST .. lt_error_rowids.LAST
-    --                 UPDATE LEGACY_DOC_STAGING 
-    //                 SET migration_status = 'ERROR', error_details = lt_error_messages(i) 
+    --                 UPDATE LEGACY_DOC_STAGING
+    //                 SET migration_status = 'ERROR', error_details = lt_error_messages(i)
     //                 WHERE rowid = lt_error_rowids(i);
     //             DBMS_OUTPUT.PUT_LINE('LEGACY_DOC_STAGING (ERROR) updated: ' || SQL%ROWCOUNT);
     //         END IF;
@@ -459,7 +459,7 @@
     --     v_app_user VARCHAR2(100); -- To store application user if available
     -- BEGIN
     --     -- Try to get application user from context, fallback to DB user
-    --     v_app_user := SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER'); 
+    --     v_app_user := SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER');
     --     IF v_app_user IS NULL THEN
     --         v_app_user := USER; -- Database user
     --     END IF;
@@ -468,11 +468,11 @@
     --         v_change_type := 'UPDATE';
     --         -- Log all old and new values, especially if any key financial value changed
     --         -- This example logs if daily_rate changed, but a real audit might log more comprehensively
-    --         IF :OLD.daily_rate <> :NEW.daily_rate OR :OLD.weekly_rate <> :NEW.weekly_rate 
+    --         IF :OLD.daily_rate <> :NEW.daily_rate OR :OLD.weekly_rate <> :NEW.weekly_rate
     --            OR :OLD.monthly_rate <> :NEW.monthly_rate OR :OLD.effective_date <> :NEW.effective_date THEN
     --             INSERT INTO EQUIPMENT_RATES_AUDIT_LOG (
     --                 audit_log_id, equipment_rate_id, change_type, change_timestamp, db_user, app_user_context,
-    --                 old_daily_rate, new_daily_rate, old_weekly_rate, new_weekly_rate, 
+    --                 old_daily_rate, new_daily_rate, old_weekly_rate, new_weekly_rate,
     --                 old_monthly_rate, new_monthly_rate, old_effective_date, new_effective_date
     --                 -- ... other relevant columns ...
     --             ) VALUES (
